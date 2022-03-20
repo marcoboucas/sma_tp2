@@ -1,18 +1,19 @@
-from typing import Optional, List
+import logging
+from random import choice
+from typing import List, Optional
+
 from mesa import Model
 from mesa.time import RandomActivation
-from random import choice
-import logging
 
 from communication.agent.CommunicatingAgent import CommunicatingAgent
-from communication.message.MessageService import MessageService
 from communication.message.Message import Message
 from communication.message.MessagePerformative import MessagePerformative
-from communication.preferences.Preferences import Preferences
+from communication.message.MessageService import MessageService
 from communication.preferences.CriterionName import CriterionName
 from communication.preferences.CriterionValue import CriterionValue
-from communication.preferences.Value import Value
 from communication.preferences.Item import Item
+from communication.preferences.Preferences import Preferences
+from communication.preferences.Value import Value
 
 
 class ArgumentAgent(CommunicatingAgent):
