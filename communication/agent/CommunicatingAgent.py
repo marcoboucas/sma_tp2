@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
 from mesa import Agent
+from communication.arguments.Argument import Argument
 
 from communication.mailbox.Mailbox import Mailbox
 from communication.message.Message import Message
 from communication.message.MessagePerformative import MessagePerformative
 from communication.message.MessageService import MessageService
+from communication.preferences.Item import Item
 
 
 class CommunicatingAgent(Agent):
@@ -60,3 +62,66 @@ class CommunicatingAgent(Agent):
     def get_messages_from_exp(self, exp):
         """Return a list of messages which have the same sender."""
         return self.__mailbox.get_messages_from_exp(exp)
+
+    def has_unread_message_with_performative(self, performative: MessagePerformative):
+        return self.__mailbox.has_unread_message_with_performative(performative)
+
+    def get_last_unread_message_with_performative(
+        self, performative: MessagePerformative
+    ):
+        return self.__mailbox.get_last_unread_message_with_performative(performative)
+
+    def propose(self, item: Item, receiver) -> None:
+        """Propose item."""
+        self.send_message(
+            Message(
+                from_agent=self.unique_id,
+                to_agent=receiver.unique_id,
+                message_performative=MessagePerformative.PROPOSE,
+                content=item,
+            )
+        )
+
+    def accept(self, proposer_agent_id: str, item: Item):
+        """Accept an agent proposition"""
+        self.send_message(
+            Message(
+                from_agent=self.unique_id,
+                to_agent=proposer_agent_id,
+                message_performative=MessagePerformative.ACCEPT,
+                content=item,
+            )
+        )
+
+    def ask_why(self, proposal_message: Message):
+        """Init."""
+        self.send_message(
+            Message(
+                from_agent=self.unique_id,
+                to_agent=proposal_message.get_exp(),
+                message_performative=MessagePerformative.ASK_WHY,
+                content=proposal_message.get_content(),
+            )
+        )
+
+    def commit(self, received_message: Message):
+        """Init."""
+        self.send_message(
+            Message(
+                from_agent=self.unique_id,
+                to_agent=received_message.get_exp(),
+                message_performative=MessagePerformative.COMMIT,
+                content=received_message.get_content(),
+            )
+        )
+
+    def argue(self, to_agent: str, argument: Argument):
+        """Argue."""
+        self.send_message(
+            Message(
+                from_agent=self.unique_id,
+                to_agent=to_agent,
+                message_performative=MessagePerformative.ARGUE,
+                content=argument,
+            )
+        )

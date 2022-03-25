@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+from typing import Optional, List
+
+from communication.message.Message import Message
+from communication.message.MessagePerformative import MessagePerformative
+
 
 class Mailbox:
     """Mailbox class.
@@ -35,13 +40,14 @@ class Mailbox:
             self.get_new_messages()
         return self.__read_messages
 
-    def get_messages_from_performative(self, performative):
+    def get_messages_from_performative(self, performative: MessagePerformative):
         """Return a list of messages which have the same performative."""
         messages_from_performative = []
         for message in self.__unread_messages + self.__read_messages:
             if message.get_performative() == performative:
                 messages_from_performative.append(message)
         return messages_from_performative
+    
 
     def get_messages_from_exp(self, exp):
         """Return a list of messages which have the same sender."""
@@ -50,3 +56,23 @@ class Mailbox:
             if message.get_exp() == exp:
                 messages_from_exp.append(message)
         return messages_from_exp
+    
+    def __get_unread_messages_with_performative(self, performative: MessagePerformative) -> List[Message]:
+        """Get the unread messages with performative."""
+        messages_from_performative = []
+        for message in self.__unread_messages:
+            if message.get_performative() == performative:
+                messages_from_performative.append(message)
+        return messages_from_performative
+
+    def has_unread_message_with_performative(self, performative: MessagePerformative) -> bool:
+        """Check if unread messages with this performative."""
+        return len(self.__get_unread_messages_with_performative(performative)) > 0
+    
+    def get_last_unread_message_with_performative(self, performative: MessagePerformative) -> Optional[Message]:
+        """Get the last unread message with this performative."""
+        for message_idx, message in enumerate(self.__unread_messages):
+            if message.get_performative() == performative:
+                self.__read_messages.append(message)
+                return self.__unread_messages.pop(message_idx)
+        return None

@@ -25,6 +25,10 @@ class Preferences:
     def get_criterion_name_list(self) -> List[CriterionName]:
         """Returns the list of criterion name."""
         return self.__criterion_name_list
+    
+    def get_criterion_for_item(self, item: Item) -> List[CriterionValue]:
+        """Get all preferences for one item."""
+        return list(filter(lambda x: x.get_item().get_name() == item.get_name(), self.__criterion_value_list))
 
     def get_criterion_value_list(self) -> List[CriterionValue]:
         """Returns the list of criterion value."""
