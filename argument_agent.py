@@ -111,42 +111,57 @@ class ArgumentAgent(CommunicatingAgent, PreferencesAgent):
             )
             return argument
 
-        # If resaons are like (c_i = x)
-        if ...:
+        # If reasons are like (c_i = x)
+        if len(argument.couple_values_list) == 1 and len(argument.comparison_list) == 0:
             couple_value = argument.couple_values_list[0]
             # If Y has a better alternative O_j, j != i, on c_i
-            if ...:
-                argument = Argument(True, other_item)
-                argument.add_premiss_couple_values(couple_value.criterion_name, other_value)
-                # other_value better than couple_value.value
+
+            other_items = [
+                x for x in self.model.items
+                if x != item and self.preference.get_value(x, couple_value.criterion_name) > self.preference.get_value(item, couple_value.criterion_name)
+            ]
+            if len(other_items) > 0:
+                other_items = list(sorted(other_items, key=lambda x: self.preference.get_value(item=x, criterion_name=couple_value.criterion_name), reverse=True))
+                argument = Argument(True, other_items[0])
+                argument.add_premiss_couple_values(couple_value.criterion_name, self.preference.get_value(other_items[0], couple_value.criterion_name))
+
                 return argument
             
             # If O_i has a bad evaluation on c_i
-            if ...:
+            if self.preference.get_value(item, couple_value.criterion_name) <= Value.AVERAGE:
                 argument = Argument(False, item)
-                argument.add_premiss_couple_values(couple_value.criterion_name, other_value)
+                argument.add_premiss_couple_values(couple_value.criterion_name, self.preference.get_value(item, couple_value.criterion_name))
                 return argument
             
             # If O_i has bad evaluation on c_j (j!=i) and c_j more important than c_i
-            if ...:
+            criteria = self.preference.get_criterion_name_list()
+            criteria = criteria[:criteria.index(couple_value.criterion_name)]
+            criteria = list(filter(lambda x: self.preference.get_value(item, x) <= Value.AVERAGE, criteria))
+            if len(criteria):
                 argument = Argument(False, item)
-                argument.add_premiss_comparison(best_criterion_name=other_criterion, worst_criterion_name=couple_value.criterion_name)
-                argument.add_premiss_couple_values(other_criterion, other_value)
+                argument.add_premiss_comparison(best_criterion_name=criteria[0], worst_criterion_name=couple_value.criterion_name)
+                argument.add_premiss_couple_values(criteria[0], self.preference.get_value(item, criteria[0]))
                 return argument
         
         # If reasons are like (c_i = x) and (c_i > c_j)
-        if ...:
+        if len(argument.couple_values_list) == 1 and len(argument.comparison_list) == 1:
+            couple_value = argument.couple_values_list[0]
+            comparison = argument.comparison_list[0]
             # If Y has a better alternative O_j, j != i, on c_i
-            if ...:
-                argument = Argument(True, other_item)
-                argument.add_premiss_couple_values(couple_value.criterion_name, other_value)
+            items = self.model.items[:]
+            items = list(filter(lambda x: x != item, items))
+            items = list(filter(lambda x: self.preference.get_value(x, couple_value.criterion_name) > self.preference.get_value(item,couple_value.criterion_name), items))
+            if len(items)>0:
+                argument = Argument(True, items[0])
+                argument.add_premiss_couple_values(couple_value.criterion_name, self.preference.get_value(items[0], couple_value.criterion_name))
                 return argument
 
             # If Y prefers c_j to c_i
-            if ...:
+            order = self.preference.get_criterion_name_list()
+            if order.index(comparison.best_criterion_name)>order.index(comparison.worst_criterion_name):
                 argument = Argument(False, item)
-                argument.add_premiss_comparison(best_criterion_name=other_criterion, worst_criterion_name=couple_value.criterion_name)
-                argument.add_premiss_couple_values(other_criterion, other_value)
+                argument.add_premiss_comparison(best_criterion_name=comparison.worst_criterion_name, worst_criterion_name=comparison.best_criterion_name)
+                argument.add_premiss_couple_values(comparison.best_criterion_name, self.preference.get_value(item, comparison.best_criterion_name))
                 return argument
 
         
