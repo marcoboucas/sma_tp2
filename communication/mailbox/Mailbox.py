@@ -2,6 +2,8 @@
 
 from typing import Optional, List
 
+import mesa
+
 from communication.message.Message import Message
 from communication.message.MessagePerformative import MessagePerformative
 
@@ -57,22 +59,24 @@ class Mailbox:
                 messages_from_exp.append(message)
         return messages_from_exp
     
-    def __get_unread_messages_with_performative(self, performative: MessagePerformative) -> List[Message]:
+    def __get_unread_messages_with_performative(self, performative: MessagePerformative, agent_id: str = None) -> List[Message]:
         """Get the unread messages with performative."""
         messages_from_performative = []
         for message in self.__unread_messages:
             if message.get_performative() == performative:
-                messages_from_performative.append(message)
+                if agent_id is None or message.get_exp() == agent_id:
+                    messages_from_performative.append(message)
         return messages_from_performative
 
-    def has_unread_message_with_performative(self, performative: MessagePerformative) -> bool:
+    def has_unread_message_with_performative(self, performative: MessagePerformative, agent_id: str = None) -> bool:
         """Check if unread messages with this performative."""
-        return len(self.__get_unread_messages_with_performative(performative)) > 0
+        return len(self.__get_unread_messages_with_performative(performative, agent_id)) > 0
     
-    def get_last_unread_message_with_performative(self, performative: MessagePerformative) -> Optional[Message]:
+    def get_last_unread_message_with_performative(self, performative: MessagePerformative, agent_id: str = None) -> Optional[Message]:
         """Get the last unread message with this performative."""
         for message_idx, message in enumerate(self.__unread_messages):
             if message.get_performative() == performative:
-                self.__read_messages.append(message)
-                return self.__unread_messages.pop(message_idx)
+                if agent_id is None or agent_id == message.get_exp():
+                    self.__read_messages.append(message)
+                    return self.__unread_messages.pop(message_idx)
         return None

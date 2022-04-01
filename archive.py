@@ -101,3 +101,46 @@ class OldAgent():
                 # if so, retrieve this message
                 last_message = self.get_last_unread_message_with_performative(MessagePerformative.PROPOSE)
                 self.ask_why(last_message)
+
+    
+    def step_q9(self):
+        """Q8. Selecting arguments."""
+
+        if self.has_unread_message_with_performative(MessagePerformative.ARGUE):
+            argue_message = self.get_last_unread_message_with_performative(
+                MessagePerformative.ARGUE
+            )
+            if self.can_attack_this_argument(argue_message.get_content()):
+                # We attack !
+                argument = self.select_argument_from_item(ask_why_message.get_content())
+                # answer an argument
+                self.argue(to_agent=argue_message.get_exp(), argument=argument)
+            else:
+                self.accept(
+                    proposer_agent_id=argue_message.get_exp(),
+                    item=argue_message.get_content().get_item(),
+                )
+
+        if self.name == "Agent1":
+            # if  the agent's mailbox contains an ASK_WHY message
+            if self.has_unread_message_with_performative(MessagePerformative.ASK_WHY):
+                ask_why_message = self.get_last_unread_message_with_performative(
+                    MessagePerformative.ASK_WHY
+                )
+                argument = self.select_argument_from_item(ask_why_message.get_content())
+                # answer an argument
+                self.argue(ask_why_message.get_exp(), argument)
+            else:
+                chosen_item = choice(self.model.items)
+                all_agents = self.get_all_agents_except_me()
+                for agent in all_agents:
+                    self.propose(chosen_item, agent)
+
+        elif self.name == "Agent2":
+            # check if has an unread PROPOSE message
+            if self.has_unread_message_with_performative(MessagePerformative.PROPOSE):
+                # if so, retrieve this message
+                last_message = self.get_last_unread_message_with_performative(
+                    MessagePerformative.PROPOSE
+                )
+                self.ask_why(last_message)

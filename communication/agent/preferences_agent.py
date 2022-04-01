@@ -26,13 +26,13 @@ class PreferencesAgent():
         """Generate the preferences (order and threshold) of the agent."""
         # Add the list in order of preference
         if self.name == "Agent1":
-            self.__generate_preferences_agent1()
+            self._generate_preferences_agent1(self.model.items)
         elif self.name == "Agent2":
-            self.__generate_preferences_agent2()
+            self._generate_preferences_agent2(self.model.items)
         else:
             raise ValueError(f"Problem agent name, {self.name}")
 
-    def __generate_preferences_agent1(self):
+    def _generate_preferences_agent1(self, items: List[Item]):
         """Generate agent1 pref."""
         self.preference.set_criterion_name_list(
             [
@@ -57,7 +57,7 @@ class PreferencesAgent():
             CriterionName.ENVIRONMENT_IMPACT: Value.VERY_GOOD,
             CriterionName.NOISE: Value.VERY_GOOD,
         }
-        for item in self.model.items:
+        for item in items:
             if item.get_name() == "E":
                 for k, v in e_pref.items():
                     self.preference.add_criterion_value(CriterionValue(item, k, v))
@@ -67,7 +67,7 @@ class PreferencesAgent():
             else:
                 raise ValueError(f"Name of the item incrroect {item.get_name()}")
 
-    def __generate_preferences_agent2(self):
+    def _generate_preferences_agent2(self, items: List[Item]):
         """Generate agent2 pref."""
         self.preference.set_criterion_name_list(
             [
@@ -92,7 +92,7 @@ class PreferencesAgent():
             CriterionName.ENVIRONMENT_IMPACT: Value.VERY_GOOD,
             CriterionName.NOISE: Value.VERY_GOOD,
         }
-        for item in self.model.items:
+        for item in items:
             if item.get_name() == "E":
                 for k, v in e_pref.items():
                     self.preference.add_criterion_value(CriterionValue(item, k, v))

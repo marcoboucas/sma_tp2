@@ -33,4 +33,5 @@ class CoupleValue:
     def __str__(self) -> str:
         return f"Criterion '{self.__criterion_name}' with value '{self.__value}'"
 
-        
+    def __repr__(self) -> str:
+        return self.__str__()

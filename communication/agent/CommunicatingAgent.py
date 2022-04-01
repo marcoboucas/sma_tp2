@@ -63,13 +63,13 @@ class CommunicatingAgent(Agent):
         """Return a list of messages which have the same sender."""
         return self.__mailbox.get_messages_from_exp(exp)
 
-    def has_unread_message_with_performative(self, performative: MessagePerformative):
-        return self.__mailbox.has_unread_message_with_performative(performative)
+    def has_unread_message_with_performative(self, performative: MessagePerformative, agent_id: str = None):
+        return self.__mailbox.has_unread_message_with_performative(performative, agent_id)
 
     def get_last_unread_message_with_performative(
-        self, performative: MessagePerformative
+        self, performative: MessagePerformative, agent_id: str = None
     ):
-        return self.__mailbox.get_last_unread_message_with_performative(performative)
+        return self.__mailbox.get_last_unread_message_with_performative(performative, agent_id)
 
     def propose(self, item: Item, receiver) -> None:
         """Propose item."""
@@ -93,25 +93,25 @@ class CommunicatingAgent(Agent):
             )
         )
 
-    def ask_why(self, proposal_message: Message):
+    def ask_why(self, to_agent: str, item: Item):
         """Init."""
         self.send_message(
             Message(
                 from_agent=self.unique_id,
-                to_agent=proposal_message.get_exp(),
+                to_agent=to_agent,
                 message_performative=MessagePerformative.ASK_WHY,
-                content=proposal_message.get_content(),
+                content=item,
             )
         )
 
-    def commit(self, received_message: Message):
+    def commit(self, to_agent: str, item: Item, reply_to_commit: bool = False):
         """Init."""
         self.send_message(
             Message(
                 from_agent=self.unique_id,
-                to_agent=received_message.get_exp(),
+                to_agent=to_agent,
                 message_performative=MessagePerformative.COMMIT,
-                content=received_message.get_content(),
+                content=(item, reply_to_commit),
             )
         )
 

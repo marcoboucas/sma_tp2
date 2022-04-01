@@ -27,3 +27,9 @@ class CriterionValue:
     def get_value(self) -> Value:
         """Returns the value."""
         return self.__value
+
+    def __str__(self) -> str:
+        return f"CriterionValue(item={self.__item}, criterion_name={self.__criterion_name}, value={self.__value})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
