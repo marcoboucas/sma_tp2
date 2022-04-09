@@ -1,10 +1,9 @@
 """Communicating agent."""
 
 import logging
-from ast import arg
 from random import choice
-from re import A
-from typing import Dict, List, Set
+
+from typing import Dict, List
 
 from communication.agent.CommunicatingAgent import CommunicatingAgent
 from communication.agent.preferences_agent import PreferencesAgent
@@ -29,13 +28,9 @@ class ArgumentAgent(CommunicatingAgent, PreferencesAgent):
         self.nbr_agreements = 0
 
     def step(self):
-        """Init."""
-        self.step_final()
-
-    def step_final(self) -> None:
         """Step for the client agent."""
         # TODO: REMOVE LATER
-        if self.name == "Agent1" or True:
+        if self.name == "Agent1" or len(self.model.schedule.agents)!=2:
             item_to_send = self.preference.most_preferred(self.model.items)
             for agent in self.get_all_agents_except_me():
                 if agent.unique_id not in self.current_discussions:
@@ -72,7 +67,7 @@ class ArgumentAgent(CommunicatingAgent, PreferencesAgent):
 
             item, reply_to_commit = commit_message.get_content()
             if reply_to_commit:
-                self.logger.warning(
+                self.logger.info(
                     "Deal done with item %s  (agent %s -> %s)",
                     item,
                     commit_message.get_exp(),
@@ -280,8 +275,6 @@ class ArgumentAgent(CommunicatingAgent, PreferencesAgent):
             len(already_talked_about),
         )
         return None
-
-        return False
 
     def get_all_agents_except_me(self) -> List[CommunicatingAgent]:
         """Return all agents except me."""

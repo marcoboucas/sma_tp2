@@ -27,6 +27,8 @@ class PreferencesAgent:
         """Generate the preferences (order and threshold) of the agent."""
         # Add the list in order of preference
         self.__generate_random_preferences()
+
+        print(f"Agent name: {self.name}")
         print(self.get_preference())
         return
         if self.name == "Agent1":

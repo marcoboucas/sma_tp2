@@ -4,8 +4,7 @@ import logging
 import matplotlib
 import matplotlib.pyplot as plt
 from mesa.visualization.ModularVisualization import ModularServer
-from mesa.visualization.modules import (BarChartModule, ChartModule,
-                                        PieChartModule)
+from mesa.visualization.modules import BarChartModule, ChartModule, PieChartModule
 from mesa.visualization.UserParam import UserSettableParameter
 
 from argument_model import ArgumentModel

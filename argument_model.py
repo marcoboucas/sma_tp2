@@ -67,8 +67,8 @@ class ArgumentModel(Model):
 if __name__ == "__main__":
     import logging
 
-    logging.basicConfig(level=logging.WARNING)
+    logging.basicConfig(level=logging.INFO)
     argument_model = ArgumentModel()
-    for _ in range(50):
+    for _ in range(25):
         print("\n")
         argument_model.step()
