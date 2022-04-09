@@ -25,7 +25,11 @@ class PreferencesAgent():
     def generate_preferences(self):
         """Generate the preferences (order and threshold) of the agent."""
         # Add the list in order of preference
+        self.__generate_random_preferences()
+        print(self.get_preference())
+        return
         if self.name == "Agent1":
+            
             self._generate_preferences_agent1(self.model.items)
         elif self.name == "Agent2":
             self._generate_preferences_agent2(self.model.items)
@@ -53,7 +57,7 @@ class PreferencesAgent():
         e_pref = {
             CriterionName.PRODUCTION_COST: Value.BAD,
             CriterionName.CONSUMPTION: Value.VERY_BAD,
-            CriterionName.DURABILITY: Value.AVERAGE,
+            CriterionName.DURABILITY: Value.GOOD,
             CriterionName.ENVIRONMENT_IMPACT: Value.VERY_GOOD,
             CriterionName.NOISE: Value.VERY_GOOD,
         }
@@ -79,14 +83,14 @@ class PreferencesAgent():
             ]
         )
         iced_pref = {
-            CriterionName.PRODUCTION_COST: Value.AVERAGE,
+            CriterionName.PRODUCTION_COST: Value.GOOD,
             CriterionName.CONSUMPTION: Value.BAD,
-            CriterionName.DURABILITY: Value.AVERAGE,
+            CriterionName.DURABILITY: Value.GOOD,
             CriterionName.ENVIRONMENT_IMPACT: Value.VERY_BAD,
             CriterionName.NOISE: Value.VERY_BAD,
         }
         e_pref = {
-            CriterionName.PRODUCTION_COST: Value.AVERAGE,
+            CriterionName.PRODUCTION_COST: Value.GOOD,
             CriterionName.CONSUMPTION: Value.BAD,
             CriterionName.DURABILITY: Value.BAD,
             CriterionName.ENVIRONMENT_IMPACT: Value.VERY_GOOD,

@@ -29,6 +29,7 @@ class CommunicatingAgent(Agent):
         self.__name = name
         self.__mailbox = Mailbox()
         self.__messages_service = MessageService.get_instance()
+        self.nbr_sent_messages = 0
 
     def step(self):
         """The step methods of the agent called by the scheduler at each time tick."""
@@ -46,7 +47,7 @@ class CommunicatingAgent(Agent):
     def send_message(self, message: Message) -> None:
         """Send message through the MessageService object."""
         self.__messages_service.send_message(message)
-
+        self.nbr_sent_messages +=1
     def get_new_messages(self):
         """Return all the unread messages."""
         return self.__mailbox.get_new_messages()

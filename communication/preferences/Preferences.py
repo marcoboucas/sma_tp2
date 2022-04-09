@@ -2,6 +2,8 @@
 
 from typing import List, Optional
 
+from prettytable import PrettyTable
+
 from communication.preferences.CriterionName import CriterionName
 from communication.preferences.CriterionValue import CriterionValue
 from communication.preferences.Item import Item
@@ -87,6 +89,25 @@ class Preferences:
         return names.index(item.get_name()) < len(sorted_items) * 0.1
 
 
+    def __str__(self) -> str:
+        order_str = ""
+        for i, x in enumerate(self.__criterion_name_list):
+            order_str += str(i + 1) + ": " + str(x) + "\n"
+        
+        
+        x = PrettyTable()
+        x.field_names = ["Item name", *self.__criterion_name_list]  
+        items = set([x.get_item() for x in self.__criterion_value_list])
+        items = list(
+            sorted(items, key=lambda item: item.get_score(self), reverse=True)
+        )
+        for item in items:
+            values = [self.get_value(item, criterion_name) for criterion_name in self.__criterion_name_list]
+            x.add_row([str(item), *values])  
+           
+        return order_str + "\n"+x.get_string()
+
+        
 if __name__ == "__main__":
     """Testing the Preferences class."""
     agent_pref = Preferences()

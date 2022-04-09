@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import logging
 
 class MessageService:
     """MessageService class.
@@ -19,9 +20,9 @@ class MessageService:
         """Static access method."""
         return MessageService.__instance
 
-    def __init__(self, scheduler, instant_delivery=True):
+    def __init__(self, scheduler, instant_delivery=True, force=True):
         """Create a new MessageService object."""
-        if MessageService.__instance is not None:
+        if MessageService.__instance is not None and not force:
             raise Exception("This class is a singleton!")
         else:
             MessageService.__instance = self
@@ -42,7 +43,7 @@ class MessageService:
 
     def dispatch_message(self, message):
         """Dispatch the message to the right agent."""
-        print(
+        logging.info(
             f"Agent {message.get_exp()} -> Agent {message.get_dest()}: {message.get_performative()} : {message.get_content()}"
         )
         self.find_agent_from_name(message.get_dest()).receive_message(message)
