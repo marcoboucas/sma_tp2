@@ -57,9 +57,11 @@ When we generate the preferences of each agent, we display a small summary for d
 
 ## About the items
 We ran the code with 10 items and we display the number of deals per items:
+ Number of deals (bar)        |  Number of deals (pie)
+:-------------------------:|:-------------------------:
+![Number of deals per item](./docs/items_nbr_deals.png)  |  ![Number of deals per item](./docs/items_nbr_deals_pie.png)
 
-![Number of deals per item](./docs/items_nbr_deals.png)
-![Number of deals per item](./docs/items_nbr_deals_pie.png)
+
 
 Even if items are generated randomly, we still have items prefered by the agents. But if we plot instead the line plots, we see something more:
 
@@ -72,8 +74,11 @@ To make the results a bit more stable, we then increased a bit the number of age
 
 First of all, we checked that the agents shared the same number of messages and agreements.
 
-![Number of messages](./docs/agents_nbr_sent_messages.png)
-![Number of agreements](./docs/agents_nbr_agreements.png)
+Number of messages             |  Number of agreements
+:-------------------------:|:-------------------------:
+![Number of messages](./docs/agents_nbr_sent_messages.png)  |  ![Number of agreements](./docs/agents_nbr_agreements.png)
+
+
 
 As we can see (log scale), the number of messages and agreements is about the same. The difference is due to the fact that the agents do not have the same preferences, hence some negociations might take a bit more time to be concluded.
 
