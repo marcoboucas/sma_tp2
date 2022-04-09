@@ -18,7 +18,8 @@ from communication.preferences.Item import Item
 from communication.preferences.Preferences import Preferences
 from communication.preferences.Value import Value
 
-class PreferencesAgent():
+
+class PreferencesAgent:
     def get_preference(self):
         return self.preference
 
@@ -29,7 +30,7 @@ class PreferencesAgent():
         print(self.get_preference())
         return
         if self.name == "Agent1":
-            
+
             self._generate_preferences_agent1(self.model.items)
         elif self.name == "Agent2":
             self._generate_preferences_agent2(self.model.items)

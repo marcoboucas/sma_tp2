@@ -3,6 +3,7 @@
 from enum import Enum
 from functools import total_ordering
 
+
 @total_ordering
 class Value(Enum):
     """Value enum class.
@@ -11,7 +12,7 @@ class Value(Enum):
 
     VERY_BAD = 0
     BAD = 1
-    #AVERAGE = 2
+    # AVERAGE = 2
     GOOD = 3
     VERY_GOOD = 4
 
@@ -22,5 +23,6 @@ class Value(Enum):
 
     def __str__(self) -> str:
         return self._name_
-        
-assert Value.VERY_BAD<Value.GOOD
+
+
+assert Value.VERY_BAD < Value.GOOD

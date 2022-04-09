@@ -2,6 +2,7 @@
 
 import logging
 
+
 class MessageService:
     """MessageService class.
     Class implementing the message service used to dispatch messages between communicating agents.

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 from mesa import Agent
-from communication.arguments.Argument import Argument
 
+from communication.arguments.Argument import Argument
 from communication.mailbox.Mailbox import Mailbox
 from communication.message.Message import Message
 from communication.message.MessagePerformative import MessagePerformative
@@ -47,7 +47,8 @@ class CommunicatingAgent(Agent):
     def send_message(self, message: Message) -> None:
         """Send message through the MessageService object."""
         self.__messages_service.send_message(message)
-        self.nbr_sent_messages +=1
+        self.nbr_sent_messages += 1
+
     def get_new_messages(self):
         """Return all the unread messages."""
         return self.__mailbox.get_new_messages()
@@ -64,13 +65,19 @@ class CommunicatingAgent(Agent):
         """Return a list of messages which have the same sender."""
         return self.__mailbox.get_messages_from_exp(exp)
 
-    def has_unread_message_with_performative(self, performative: MessagePerformative, agent_id: str = None):
-        return self.__mailbox.has_unread_message_with_performative(performative, agent_id)
+    def has_unread_message_with_performative(
+        self, performative: MessagePerformative, agent_id: str = None
+    ):
+        return self.__mailbox.has_unread_message_with_performative(
+            performative, agent_id
+        )
 
     def get_last_unread_message_with_performative(
         self, performative: MessagePerformative, agent_id: str = None
     ):
-        return self.__mailbox.get_last_unread_message_with_performative(performative, agent_id)
+        return self.__mailbox.get_last_unread_message_with_performative(
+            performative, agent_id
+        )
 
     def propose(self, item: Item, receiver) -> None:
         """Propose item."""

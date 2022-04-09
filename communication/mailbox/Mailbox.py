@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Optional, List
+from typing import List, Optional
 
 import mesa
 
@@ -49,7 +49,6 @@ class Mailbox:
             if message.get_performative() == performative:
                 messages_from_performative.append(message)
         return messages_from_performative
-    
 
     def get_messages_from_exp(self, exp):
         """Return a list of messages which have the same sender."""
@@ -58,8 +57,10 @@ class Mailbox:
             if message.get_exp() == exp:
                 messages_from_exp.append(message)
         return messages_from_exp
-    
-    def __get_unread_messages_with_performative(self, performative: MessagePerformative, agent_id: str = None) -> List[Message]:
+
+    def __get_unread_messages_with_performative(
+        self, performative: MessagePerformative, agent_id: str = None
+    ) -> List[Message]:
         """Get the unread messages with performative."""
         messages_from_performative = []
         for message in self.__unread_messages:
@@ -68,11 +69,18 @@ class Mailbox:
                     messages_from_performative.append(message)
         return messages_from_performative
 
-    def has_unread_message_with_performative(self, performative: MessagePerformative, agent_id: str = None) -> bool:
+    def has_unread_message_with_performative(
+        self, performative: MessagePerformative, agent_id: str = None
+    ) -> bool:
         """Check if unread messages with this performative."""
-        return len(self.__get_unread_messages_with_performative(performative, agent_id)) > 0
-    
-    def get_last_unread_message_with_performative(self, performative: MessagePerformative, agent_id: str = None) -> Optional[Message]:
+        return (
+            len(self.__get_unread_messages_with_performative(performative, agent_id))
+            > 0
+        )
+
+    def get_last_unread_message_with_performative(
+        self, performative: MessagePerformative, agent_id: str = None
+    ) -> Optional[Message]:
         """Get the last unread message with this performative."""
         for message_idx, message in enumerate(self.__unread_messages):
             if message.get_performative() == performative:

@@ -2,19 +2,17 @@
 
 
 import os
+
 from tqdm import tqdm
 
-from pw_argumentation import ArgumentModel
+from argument_model import ArgumentModel
 
 
 def run_and_save(nbr_steps: int = 100, results_folder: str = "./results"):
     """Run and save one epoch."""
 
     # Generate the model
-    model = ArgumentModel(
-        nb_agents=10,
-        nb_items=10
-    )
+    model = ArgumentModel(nb_agents=10, nb_items=10)
 
     # Run the simulation
     for _ in tqdm(range(nbr_steps)):

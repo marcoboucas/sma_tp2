@@ -10,7 +10,7 @@ We first programmed each agent separately, and then aggregated them into a gener
 # How to run the code
 
 1. Install the required packages `pip install -r requirements.txt`
-1. Run the code `python pw_argumentation.py`
+1. Run the code `python argument_model.py`
 1. If you prefer the version with Mesa visualization, run `python run.py`
 
 

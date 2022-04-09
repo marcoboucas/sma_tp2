@@ -27,10 +27,15 @@ class Preferences:
     def get_criterion_name_list(self) -> List[CriterionName]:
         """Returns the list of criterion name."""
         return self.__criterion_name_list
-    
+
     def get_criterion_for_item(self, item: Item) -> List[CriterionValue]:
         """Get all preferences for one item."""
-        return list(filter(lambda x: x.get_item().get_name() == item.get_name(), self.__criterion_value_list))
+        return list(
+            filter(
+                lambda x: x.get_item().get_name() == item.get_name(),
+                self.__criterion_value_list,
+            )
+        )
 
     def get_criterion_value_list(self) -> List[CriterionValue]:
         """Returns the list of criterion value."""
@@ -88,26 +93,25 @@ class Preferences:
         names = list(map(lambda x: x.get_name(), sorted_items))
         return names.index(item.get_name()) < len(sorted_items) * 0.1
 
-
     def __str__(self) -> str:
         order_str = ""
         for i, x in enumerate(self.__criterion_name_list):
             order_str += str(i + 1) + ": " + str(x) + "\n"
-        
-        
-        x = PrettyTable()
-        x.field_names = ["Item name", *self.__criterion_name_list]  
-        items = set([x.get_item() for x in self.__criterion_value_list])
-        items = list(
-            sorted(items, key=lambda item: item.get_score(self), reverse=True)
-        )
-        for item in items:
-            values = [self.get_value(item, criterion_name) for criterion_name in self.__criterion_name_list]
-            x.add_row([str(item), *values])  
-           
-        return order_str + "\n"+x.get_string()
 
-        
+        x = PrettyTable()
+        x.field_names = ["Item name", *self.__criterion_name_list]
+        items = set([x.get_item() for x in self.__criterion_value_list])
+        items = list(sorted(items, key=lambda item: item.get_score(self), reverse=True))
+        for item in items:
+            values = [
+                self.get_value(item, criterion_name)
+                for criterion_name in self.__criterion_name_list
+            ]
+            x.add_row([str(item), *values])
+
+        return order_str + "\n" + x.get_string()
+
+
 if __name__ == "__main__":
     """Testing the Preferences class."""
     agent_pref = Preferences()

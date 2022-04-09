@@ -15,8 +15,7 @@ class CoupleValue:
     """
 
     def __init__(self, criterion_name: CriterionName, value: CriterionValue):
-        """Creates a new couple value.
-        """
+        """Creates a new couple value."""
         self.__criterion_name = criterion_name
         self.__value = value
 
@@ -24,7 +23,7 @@ class CoupleValue:
     def criterion_name(self):
         """Get criterion name."""
         return self.__criterion_name
-    
+
     @property
     def value(self):
         """Get value."""
