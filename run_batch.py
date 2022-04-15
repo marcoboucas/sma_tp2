@@ -23,7 +23,7 @@ def run_and_save(nbr_steps: int = 100, results_folder: str = "./results"):
     agent_vars = model.datacollector.get_agent_vars_dataframe()
     agent_vars.to_csv(os.path.join(results_folder, "agents.csv"))
     model_vars = model.datacollector.get_model_vars_dataframe()
-    model_vars.to_csv(os.path.join(results_folder, "model.csv"))
+    # model_vars.to_csv(os.path.join(results_folder, "model.csv"))
 
 
 if __name__ == "__main__":

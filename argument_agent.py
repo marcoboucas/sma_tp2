@@ -22,20 +22,24 @@ class ArgumentAgent(CommunicatingAgent, PreferencesAgent):
         self.preference = Preferences()
         self.logger = logging.getLogger(self.name)
         self.current_discussions: Dict[str, List[Argument]] = {}
-        self.previous_argument = []
 
-        self.nbr_won = 0
-        self.nbr_agreements = 0
+        self.nbr_won: int = 0
+        self.nbr_agreements: int = 0
+        self.deals_won: List[int] = []  # list of ids of item
+        self.performative_uses: Dict[str, int] = {
+            performative.name: 0 for performative in MessagePerformative
+        }
 
     def step(self):
         """Step for the client agent."""
         # TODO: REMOVE LATER
-        if self.name == "Agent1" or len(self.model.schedule.agents)!=2:
+        if self.name == "Agent1" or len(self.model.schedule.agents) != 2:
             item_to_send = self.preference.most_preferred(self.model.items)
             for agent in self.get_all_agents_except_me():
                 if agent.unique_id not in self.current_discussions:
                     self.current_discussions[agent.unique_id] = []
                     self.propose(item_to_send, agent)
+                    self.performative_uses[MessagePerformative.PROPOSE.name] += 1
 
         # We argue while we still can
         while self.has_unread_message_with_performative(MessagePerformative.ARGUE):
@@ -48,14 +52,18 @@ class ArgumentAgent(CommunicatingAgent, PreferencesAgent):
             new_argument = self.generate_argument(
                 item=argument.item,
                 argument=argument,
-                past_arguments=self.current_discussions[argue_message.get_exp()],
+                past_arguments=self.current_discussions[argue_message.get_exp(
+                )],
             )
             if new_argument is None:
                 self.accept(
                     proposer_agent_id=argue_message.get_exp(), item=argument.item
                 )
+                self.performative_uses[MessagePerformative.ACCEPT.name] += 1
             else:
-                self.argue(to_agent=argue_message.get_exp(), argument=new_argument)
+                self.argue(to_agent=argue_message.get_exp(),
+                           argument=new_argument)
+                self.performative_uses[MessagePerformative.ARGUE.name] += 1
 
         # If we receive a commit message, we check if we need to reply
         while self.has_unread_message_with_performative(MessagePerformative.COMMIT):
@@ -80,6 +88,7 @@ class ArgumentAgent(CommunicatingAgent, PreferencesAgent):
                 self.commit(
                     to_agent=commit_message.get_exp(), item=item, reply_to_commit=True
                 )
+                self.performative_uses[MessagePerformative.COMMIT.name] += 1
 
         # For each propose message
         while self.has_unread_message_with_performative(MessagePerformative.PROPOSE):
@@ -91,9 +100,12 @@ class ArgumentAgent(CommunicatingAgent, PreferencesAgent):
 
             # Check if it is the best item
             if self.preference.most_preferred(self.model.items) == item:
-                self.accept(proposer_agent_id=propose_message.get_exp(), item=item)
+                self.accept(
+                    proposer_agent_id=propose_message.get_exp(), item=item)
+                self.performative_uses[MessagePerformative.ACCEPT.name] += 1
             else:
                 self.ask_why(to_agent=propose_message.get_exp(), item=item)
+                self.performative_uses[MessagePerformative.ASK_WHY.name] += 1
 
         # For each accept message
         while self.has_unread_message_with_performative(MessagePerformative.ACCEPT):
@@ -103,7 +115,10 @@ class ArgumentAgent(CommunicatingAgent, PreferencesAgent):
             self.commit(
                 to_agent=accept_message.get_exp(), item=accept_message.get_content()
             )
+            self.performative_uses[MessagePerformative.COMMIT.name] += 1
             self.nbr_agreements += 1
+            self.deals_won.append(self.model.items.index(
+                accept_message.get_content()))
 
         # For each ask why message
         while self.has_unread_message_with_performative(MessagePerformative.ASK_WHY):
@@ -114,9 +129,11 @@ class ArgumentAgent(CommunicatingAgent, PreferencesAgent):
             argument = self.generate_argument(item)
             if argument is not None:
                 self.argue(ask_message.get_exp(), argument)
+                self.performative_uses[MessagePerformative.ARGUE.name] += 1
             else:
                 new_item = choice([x for x in self.model.items if x != item])
                 self.propose(item=new_item, receiver=ask_message.get_exp())
+                self.performative_uses[MessagePerformative.PROPOSE.name] += 1
 
     def generate_argument(
         self,
@@ -197,7 +214,8 @@ class ArgumentAgent(CommunicatingAgent, PreferencesAgent):
                 argument = Argument(False, item)
                 argument.add_premiss_couple_values(
                     couple_value.criterion_name,
-                    self.preference.get_value(item, couple_value.criterion_name),
+                    self.preference.get_value(
+                        item, couple_value.criterion_name),
                 )
                 return argument
 
@@ -206,7 +224,8 @@ class ArgumentAgent(CommunicatingAgent, PreferencesAgent):
             criteria = criteria[: criteria.index(couple_value.criterion_name)]
             criteria = list(
                 filter(
-                    lambda x: self.preference.get_value(item, x) < Value.GOOD, criteria
+                    lambda x: self.preference.get_value(
+                        item, x) < Value.GOOD, criteria
                 )
             )
             if len(criteria):
@@ -233,15 +252,18 @@ class ArgumentAgent(CommunicatingAgent, PreferencesAgent):
             items = list(filter(lambda x: x != item, items))
             items = list(
                 filter(
-                    lambda x: self.preference.get_value(x, couple_value.criterion_name)
+                    lambda x: self.preference.get_value(
+                        x, couple_value.criterion_name)
                     > couple_value.value,
                     items,
                 )
             )
             items = list(
-                sorted(items, key=lambda x: x.get_score(self.preference), reverse=True)
+                sorted(items, key=lambda x: x.get_score(
+                    self.preference), reverse=True)
             )
-            items = list(filter(lambda x: x not in already_talked_about, items))
+            items = list(
+                filter(lambda x: x not in already_talked_about, items))
             if len(items) > 0:
                 self.logger.info(
                     "We have a comparison, If Y has a better alternative O_j, j != i, on c_i"
@@ -249,7 +271,8 @@ class ArgumentAgent(CommunicatingAgent, PreferencesAgent):
                 argument = Argument(True, items[0])
                 argument.add_premiss_couple_values(
                     couple_value.criterion_name,
-                    self.preference.get_value(items[0], couple_value.criterion_name),
+                    self.preference.get_value(
+                        items[0], couple_value.criterion_name),
                 )
                 return argument
 
@@ -258,7 +281,8 @@ class ArgumentAgent(CommunicatingAgent, PreferencesAgent):
             if order.index(comparison.best_criterion_name) > order.index(
                 comparison.worst_criterion_name
             ):
-                self.logger.info("We have a comparison,  If Y prefers c_j to c_i")
+                self.logger.info(
+                    "We have a comparison,  If Y prefers c_j to c_i")
                 argument = Argument(False, item)
                 argument.add_premiss_comparison(
                     best_criterion_name=comparison.worst_criterion_name,
@@ -266,7 +290,8 @@ class ArgumentAgent(CommunicatingAgent, PreferencesAgent):
                 )
                 argument.add_premiss_couple_values(
                     comparison.best_criterion_name,
-                    self.preference.get_value(item, comparison.best_criterion_name),
+                    self.preference.get_value(
+                        item, comparison.best_criterion_name),
                 )
                 return argument
 

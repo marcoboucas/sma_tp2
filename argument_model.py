@@ -32,7 +32,8 @@ class ArgumentModel(Model):
         self.items = [
             Item("E", "Elec"),
             Item("D", "Diesel"),
-            *[Item(str(i), "Car " + str(i)) for i in range(1, nb_items - 2 + 1)],
+            *[Item(str(i), "Car " + str(i))
+              for i in range(1, nb_items - 2 + 1)],
         ]
         self.done_deals = {x.get_name(): 0 for x in self.items}
 
@@ -47,7 +48,7 @@ class ArgumentModel(Model):
         self.datacollector = DataCollector(
             model_reporters={
                 **{
-                    f"item_{i}": count_item_deals(x.get_name())
+                    f"item_{i}": x.get_name()  # count_item_deals(x.get_name())
                     for i, x in enumerate(self.items)
                 },
             },
@@ -55,6 +56,8 @@ class ArgumentModel(Model):
                 "nbr_won": "nbr_won",
                 "nbr_sent_messages": "nbr_sent_messages",
                 "nbr_agreements": "nbr_agreements",
+                "deals_won": "deals_won",
+                "performative_uses": "performative_uses",
             },
         )
 
